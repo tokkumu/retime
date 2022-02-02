@@ -135,9 +135,8 @@ export default function DisplayForm() {
                     </Grid>
                     <Grid container direction="column" justifyContent="space-between" item xl={6}>
                         <Grid item>
-                            <Box display="flex" justifyContent="flex-end">
+                            <Box flexDirection="row" display="flex" justifyContent="flex-end">
                                 <img src="https://www.gstatic.com/youtube/img/branding/youtubelogo/svg/youtubelogo.svg" alt="YouTube Banner Logo" style={{ height: "3em" }} />
-                                <img src="https://connect.elo.io/blob/BRcfB9CUanCYKNp2iahVh2sYhX9VBtcYhVcS5a-7K2sOK+QNi1D3i1hsi+cGva0E?q=70" alt="Speedrun.com Logo" style={{ height: "3em" }} />
                             </Box>
                         </Grid>
                         <Grid item>
