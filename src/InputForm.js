@@ -36,7 +36,6 @@ export default function DisplayForm() {
     };
 
     React.useEffect(() => {
-        document.title = "Retime"
         if (start) {
             let temp = JSON.parse(start).cmt;
             if (framerate && temp.length) {
