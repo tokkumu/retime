@@ -1,13 +1,21 @@
 import './InputForm.css';
 import { TextField, Box, Grid } from '@mui/material';
 import * as React from 'react'
+import { IconButton } from '@mui/material';
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 export default function DisplayForm() {
     const [format, setFormat] = React.useState("Mod note: Time starts at <start> and ends at <end>, at <framerate> fps.\nRetimed using https://nick-ncsu.github.io/retime/");
     const [modifier, setModifier] = React.useState(0);
-    const [framerate, setFramerate] = React.useState(0);
+    const [alignment, setAlignment] = React.useState("60");
+    const [framerate, setFramerate] = React.useState(60);
+    const [framerateDisabled, setFramerateDisabled] = React.useState(true);
     const [start, setStart] = React.useState("");
+    const [validStart, setValidStart] = React.useState(true);
     const [end, setEnd] = React.useState("");
+    const [validEnd, setValidEnd] = React.useState(true);
     const [startTime, setStartTime] = React.useState("0:0:0:000");
     const [endTime, setEndTime] = React.useState("0:0:0:000");
     const [elapsedTime, setElapsedTime] = React.useState("0:0:0:000");
@@ -35,26 +43,51 @@ export default function DisplayForm() {
         setEnd(event.target.value);
     };
 
+    const changeFramerate = (event, newAlignment) => {
+        setAlignment(newAlignment);
+        if(!isNaN(+event.target.value)) {
+            setFramerateDisabled(true);
+            setFramerate(+event.target.value);
+        } else {
+            setFramerateDisabled(false);
+        }
+    };
+
     React.useEffect(() => {
         if (start) {
-            let temp = JSON.parse(start).cmt;
-            if (framerate && temp.length) {
-                setStartms((temp - (temp % (1 / framerate))).toFixed(3) * 1000);
+            let startInfo;
+            try {
+                startInfo = JSON.parse(start).cmt;
+                setValidStart(true);
+            } catch (err) {
+                startInfo = "";
+                setValidStart(false);
+            }
+            if (framerate && startInfo.length) {
+                setStartms((startInfo - (startInfo % (1 / framerate))).toFixed(3) * 1000);
                 setStartTime(new Date(startms - (modifier * 1000)).toISOString().slice(11, -1));
             }
         }
         if (end) {
-            let temp = JSON.parse(end).cmt;
-            if (framerate && temp.length) {
-                setEndms((temp - (temp % (1 / framerate))).toFixed(3) * 1000);
+            let endInfo;
+            try {
+                endInfo = JSON.parse(end).cmt;
+                setValidEnd(true);
+            } catch (err) {
+                endInfo = "";
+                setValidEnd(false);
+            }
+            if (framerate && endInfo.length) {
+                setEndms((endInfo - (endInfo % (1 / framerate))).toFixed(3) * 1000);
                 setEndTime(new Date(endms).toISOString().slice(11, -1));
             }
         }
         if (framerate && startms && endms) {
             setElapsedTime(new Date(endms + (modifier * 1000) - startms).toISOString().slice(11, -1));
-            setComment(format.replace(/<start>/g, startTime).replace(/<end>/g, endTime).replace(/<framerate>/g, framerate));
+            setComment(format.replace(/<start>/g, startTime).replace(/<end>/g, endTime)
+                .replace(/<framerate>/g, framerate).replace(/<total>/g, elapsedTime));
         }
-    }, [start, end, framerate, startms, endms, modifier, endTime, format, startTime]);
+    }, [start, end, framerate, startms, endms, modifier, endTime, format, startTime, elapsedTime]);
 
     return (
         <div className='form'>
@@ -71,20 +104,37 @@ export default function DisplayForm() {
                     columnSpacing={3}
                 >
                     <Grid container direction="column" justifyContent="space-between" spacing={3} item xl={6}>
-                        <Grid item>
-                            <TextField
-                                id="framerate"
-                                label="Framerate"
-                                type="number"
-                                value={framerate}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                onChange={updateFramerate}
-                                required
-                                fullWidth
-                                margin='55px'
-                            />
+                        <Grid container direction="row" spacing={3} item>
+                            <Grid item>
+                                <ToggleButtonGroup
+                                    color="standard"
+                                    value={alignment}
+                                    exclusive
+                                    onChange={changeFramerate}
+                                    style={{height:'100%'}}
+                                >
+                                    <ToggleButton value="25">25</ToggleButton>
+                                    <ToggleButton value="30">30</ToggleButton>
+                                    <ToggleButton value="60">60</ToggleButton>
+                                    <ToggleButton value="Custom">Custom</ToggleButton>
+
+                                </ToggleButtonGroup>
+                            </Grid>
+                            <Grid item xs={9}>
+                                <TextField
+                                    id="framerate"
+                                    label="Framerate"
+                                    type="number"
+                                    value={framerate}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    onChange={updateFramerate}
+                                    disabled={framerateDisabled}
+                                    required
+                                    fullWidth
+                                />
+                            </Grid>
                         </Grid>
                         <Grid item>
                             <TextField
@@ -100,25 +150,45 @@ export default function DisplayForm() {
                                 fullWidth
                             />
                         </Grid>
-                        <Grid item>
-                            <TextField
-                                id="sFrame"
-                                label="Start Frame"
-                                value={start}
-                                onChange={updateStart}
-                                required
-                                fullWidth
-                            />
+                        <Grid container direction="row" item>
+                            <Grid item xs={11}>
+                                <TextField
+                                    id="sFrame"
+                                    label="Start Frame"
+                                    value={start}
+                                    onChange={updateStart}
+                                    error={!validStart}
+                                    required
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item xs={1}>
+                                <IconButton onClick={async () => {
+                                    setStart(await navigator.clipboard.readText());
+                                }}>
+                                    <ContentPasteIcon />
+                                </IconButton>
+                            </Grid>
                         </Grid>
-                        <Grid item>
-                            <TextField
-                                id="eFrame"
-                                label="End Frame"
-                                value={end}
-                                onChange={updateEnd}
-                                required
-                                fullWidth
-                            />
+                        <Grid container direction="row" item>
+                            <Grid item xs={11}>
+                                <TextField
+                                    id="eFrame"
+                                    label="End Frame"
+                                    value={end}
+                                    onChange={updateEnd}
+                                    error={!validEnd}
+                                    required
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item xs={1}>
+                                <IconButton onClick={async () => {
+                                    setEnd(await navigator.clipboard.readText());
+                                }}>
+                                    <ContentPasteIcon />
+                                </IconButton>
+                            </Grid>
                         </Grid>
                         <Grid item>
                             <TextField
