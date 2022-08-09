@@ -64,8 +64,8 @@ export default function DisplayForm() {
                 setValidStart(false);
             }
             if (framerate && startInfo.length) {
-                setStartms((startInfo - (startInfo % (1 / framerate))).toFixed(3) * 1000);
-                setStartTime(new Date(startms - (modifier * 1000)).toISOString().slice(11, -1));
+                setStartms((startInfo - (startInfo % (1 / framerate))) * 1000);
+                setStartTime(new Date(Math.round(startms) - (modifier * 1000)).toISOString().slice(11, -1));
             }
         }
         if (end) {
@@ -78,12 +78,12 @@ export default function DisplayForm() {
                 setValidEnd(false);
             }
             if (framerate && endInfo.length) {
-                setEndms((endInfo - (endInfo % (1 / framerate))).toFixed(3) * 1000);
-                setEndTime(new Date(endms).toISOString().slice(11, -1));
+                setEndms((endInfo - (endInfo % (1 / framerate))) * 1000);
+                setEndTime(new Date(Math.round(endms)).toISOString().slice(11, -1));
             }
         }
         if (framerate && startms && endms) {
-            setElapsedTime(new Date(endms + (modifier * 1000) - startms).toISOString().slice(11, -1));
+            setElapsedTime(new Date(Math.round(endms + (modifier * 1000) - startms)).toISOString().slice(11, -1));
             setComment(format.replace(/<start>/g, startTime).replace(/<end>/g, endTime)
                 .replace(/<framerate>/g, framerate).replace(/<total>/g, elapsedTime));
         }
