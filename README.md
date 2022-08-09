@@ -17,7 +17,7 @@ When on a YouTube video you can use the , and . keys on your keyboard to move fo
 When you are on the start or end frame respectively, you can right click the video and select "Copy debug info". You then paste this whole string into the field.
 
 ### Format 
-Auto-generated format which can use fields <start>, <end>, and <framerate>.
+Auto-generated format which can use fields \<start>, \<end>, \<total>, and \<framerate>.
 Example: 
 ```
 Mod note: Time starts at <start> and ends at <end>, at <framerate> fps.
