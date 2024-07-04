@@ -5,6 +5,7 @@ import { IconButton } from '@mui/material';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ReactGA from 'react-ga4';
 
 export default function DisplayForm() {
     const [format, setFormat] = React.useState("Mod note: Time starts at <start> and ends at <end>, at <framerate> fps.\nRetimed using https://nick-ncsu.github.io/retime/");
@@ -88,6 +89,13 @@ export default function DisplayForm() {
                 .replace(/<framerate>/g, framerate).replace(/<total>/g, elapsedTime));
         }
     }, [start, end, framerate, startms, endms, modifier, endTime, format, startTime, elapsedTime]);
+
+    ReactGA.initialize('G-1E2WKQ764W');
+    ReactGA.send({
+      hitType: 'pageview',
+      page: '/retime',
+      title: 'Retime',
+    });
 
     return (
         <div className='form'>
