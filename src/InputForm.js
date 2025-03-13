@@ -7,7 +7,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ReactGA from 'react-ga4';
 
-ReactGA.initialize('G-1E2WKQ764W');
+ReactGA.initialize('G-B46HP6N1HN');
 
 export default function DisplayForm() {
     const [format, setFormat] = React.useState("Mod note: Time starts at <start> and ends at <end>, at <framerate> fps.\nRetimed using https://nick-ncsu.github.io/retime/");
