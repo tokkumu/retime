@@ -92,14 +92,6 @@ export default function DisplayForm() {
         }
     }, [start, end, framerate, startms, endms, modifier, endTime, format, startTime, elapsedTime]);
 
-    React.useEffect(() => {
-        ReactGA.send({
-            hitType: 'pageview',
-            page: '/retime',
-            title: 'Retime',
-          });
-    }, []);
-
     return (
         <div className='form'>
             <Box
