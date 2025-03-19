@@ -10,7 +10,7 @@ import ReactGA from 'react-ga4';
 ReactGA.initialize('GT-KDTSJ7PP');
 
 export default function DisplayForm() {
-    const [format, setFormat] = React.useState("Mod note: Time starts at <start> and ends at <end>, at <framerate> fps.\nRetimed using https://nick-ncsu.github.io/retime/");
+    const [format, setFormat] = React.useState("Mod note: Time starts at <start> and ends at <end>, at <framerate> fps.\nRetimed using https://tokkumu.com/retime/");
     const [modifier, setModifier] = React.useState(0);
     const [alignment, setAlignment] = React.useState("60");
     const [framerate, setFramerate] = React.useState(60);
